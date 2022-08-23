@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="labelUsername">Nom d\'utilisateur</string>
+    <string name="labelPassword">Mot de passe</string>
+    <string name="loginButton">Connexion</string>
+    <string name="registerButton">S\'inscrire</string>
+</resources>
