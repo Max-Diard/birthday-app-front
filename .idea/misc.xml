@@ -3,10 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/laragon/www/Cefim/Cours/Android/birthday-app/app/src/main/res/drawable/splash_screen_background.xml" value="0.196" />
-        <entry key="..\:/laragon/www/Cefim/Cours/Android/birthday-app/app/src/main/res/layout/activity_login.xml" value="0.33" />
-        <entry key="..\:/laragon/www/Cefim/Cours/Android/birthday-app/app/src/main/res/layout/activity_main.xml" value="0.1" />
-        <entry key="..\:/laragon/www/Cefim/Cours/Android/birthday-app/app/src/main/res/layout/activity_splash_sreen.xml" value="0.18802083333333333" />
+        <entry key="app/src/main/res/layout/activity_login.xml" value="0.30842391304347827" />
       </map>
     </option>
   </component>

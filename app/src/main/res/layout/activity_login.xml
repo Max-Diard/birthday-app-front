@@ -18,12 +18,14 @@
             android:gravity="center">
 
             <EditText
+                android:id="@+id/input_username"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:hint="@string/labelUsername"
                 android:text="" />
 
             <EditText
+                android:id="@+id/input_password"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:hint="@string/labelPassword"
@@ -39,12 +41,14 @@
             android:layout_marginTop="10dp">
 
             <Button
+                android:id="@+id/button_register"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="5dp"
                 android:text="@string/registerButton" />
 
             <Button
+                android:id="@+id/button_login"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
