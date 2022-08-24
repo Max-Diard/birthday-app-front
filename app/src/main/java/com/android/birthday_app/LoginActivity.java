@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -56,9 +57,7 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         // Todo :Une fois connecté !
-        SharedPreferences preferences = this.getSharedPreferences("Islogin", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putBoolean("Islogin", true).apply();
+
     }
 
     private void callApi(String username, String password) {
@@ -89,13 +88,31 @@ public class LoginActivity extends AppCompatActivity {
                 Log.d("TAG", response.body().string());
                 if (response.isSuccessful()) {
                     Log.d("TAG", "OK COOL");
+
+                    runOnUiThread(() -> {
+                        SharedPreferences preferences = getSharedPreferences("Islogin", Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = preferences.edit();
+                        editor.putBoolean("Islogin", true).apply();
+
+//                        try {
+//                            Log.d("TAG", response.body().string());
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                        }
+
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        startActivity(intent);
+//
+//                        try {
+//                            intent.putExtra("user", response.body().string());
+//                            startActivity(intent);
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                        }
+                    });
                 } else {
-                    Log.d("TAG", "PAS COOL");
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(LoginActivity.this, response.headers().get("errorMessage"), Toast.LENGTH_SHORT).show();
-                        }
+                    runOnUiThread(() -> {
+                        Snackbar.make(binding.getRoot(), response.headers().get("errorMessage"), Snackbar.LENGTH_LONG).show();
                     });
                 }
             }
