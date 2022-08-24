@@ -1,8 +1,5 @@
 package com.android.birthday_app;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,6 +8,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.birthday_app.databinding.ActivityLoginBinding;
 import com.google.android.material.snackbar.Snackbar;
@@ -22,9 +22,7 @@ import java.io.IOException;
 
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.FormBody;
 import okhttp3.MediaType;
-import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -46,18 +44,12 @@ public class LoginActivity extends AppCompatActivity {
 
         Button loginButton = binding.buttonLogin;
 
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String username = binding.inputUsername.getText().toString();
-                String password = binding.inputPassword.getText().toString();
-                // Lancer appel API pour authentification
-                callApi(username, password);
-            }
+        loginButton.setOnClickListener(click -> {
+            String username = binding.inputUsername.getText().toString();
+            String password = binding.inputPassword.getText().toString();
+            // Lancer appel API pour authentification
+            callApi(username, password);
         });
-
-        // Todo :Une fois connecté !
-
     }
 
     private void callApi(String username, String password) {
@@ -70,13 +62,14 @@ public class LoginActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
-        RequestBody requestBody = RequestBody.create(mediaType, jsonObject.toString());
+        RequestBody requestBody = RequestBody.create(jsonObject.toString(), mediaType);
 
         this.httpClient = new OkHttpClient();
         Request request = new Request.Builder()
                 .url("http://192.168.1.16:8080/api/v1/login")
                 .post(requestBody)
                 .build();
+
         this.httpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
@@ -84,35 +77,32 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                Log.d("TAG", response.body().string());
+            public void onResponse(@NonNull Call call, @NonNull Response response){
                 if (response.isSuccessful()) {
                     Log.d("TAG", "OK COOL");
-
                     runOnUiThread(() -> {
-                        SharedPreferences preferences = getSharedPreferences("Islogin", Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = preferences.edit();
-                        editor.putBoolean("Islogin", true).apply();
+                        try {
+                            String jsonData = response.body().string();
+                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                            intent.putExtra("user", jsonData);
 
-//                        try {
-//                            Log.d("TAG", response.body().string());
-//                        } catch (IOException e) {
-//                            e.printStackTrace();
-//                        }
+                            SharedPreferences preferences = getSharedPreferences("loginFile", Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = preferences.edit();
+                            editor.putBoolean("isLogin", true);
+                            editor.putString("userData", jsonData);
+                            editor.apply();
 
-                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                        startActivity(intent);
-//
-//                        try {
-//                            intent.putExtra("user", response.body().string());
-//                            startActivity(intent);
-//                        } catch (IOException e) {
-//                            e.printStackTrace();
-//                        }
+                            startActivity(intent);
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
                     });
                 } else {
                     runOnUiThread(() -> {
-                        Snackbar.make(binding.getRoot(), response.headers().get("errorMessage"), Snackbar.LENGTH_LONG).show();
+                        String headersError = response.headers().get("errorMessage");
+                        Snackbar.make(binding.getRoot(), headersError, Snackbar.LENGTH_LONG).show();
                     });
                 }
             }

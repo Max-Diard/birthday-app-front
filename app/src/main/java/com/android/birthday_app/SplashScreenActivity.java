@@ -14,10 +14,10 @@ public class SplashScreenActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        SharedPreferences preferences = this.getSharedPreferences("Islogin", Context.MODE_PRIVATE);
-        boolean isLogin = preferences.getBoolean("Islogin", false);
+        SharedPreferences preferences = this.getSharedPreferences("loginFile", Context.MODE_PRIVATE);
+        boolean isLogin = preferences.getBoolean("isLogin", false);
 
-        if (!isLogin) {
+        if (isLogin) {
             startActivity(new Intent(this, MainActivity.class));
         } else {
             startActivity(new Intent(this, LoginActivity.class));

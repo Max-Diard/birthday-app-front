@@ -4,5 +4,5 @@
     <string name="labelPassword">Password</string>
     <string name="loginButton">Connection</string>
     <string name="registerButton">Register</string>
-    <string name="logout_button">Deconnected</string>
+    <string name="logout_button">Logout</string>
 </resources>
