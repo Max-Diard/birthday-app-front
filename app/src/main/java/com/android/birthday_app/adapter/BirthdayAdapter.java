@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.birthday_app.R;
 import com.android.birthday_app.model.Birthday;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class BirthdayAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -22,6 +23,11 @@ public class BirthdayAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public BirthdayAdapter(Context context, List<ListItem> listItem) {
         this.mContext = context;
         this.mListItem = listItem;
+    }
+
+    public void setListItems(List<ListItem> mListItems) {
+        this.mListItem = mListItems;
+        notifyDataSetChanged();
     }
 
     @Override

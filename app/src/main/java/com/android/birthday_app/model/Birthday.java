@@ -18,17 +18,19 @@ public class Birthday {
     private String firstname;
     private String lastname;
 
-    public Birthday(JSONObject jsonData) throws JSONException {
+    public Birthday(JSONObject jsonData) throws Exception {
         this.id = jsonData.getLong("id");
         //Todo: Gérer Date
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        try {
-            this.date = format.parse(jsonData.getString("date"));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        this.date = format.parse(jsonData.getString("date"));
         this.firstname = jsonData.getString("firstname");
         this.lastname = jsonData.getString("lastname");
+    }
+
+    public Birthday(String firstname, String lastname, Date date){
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.date = date;
     }
 
     public String getIdentity() {

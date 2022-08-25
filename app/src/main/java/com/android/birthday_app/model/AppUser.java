@@ -14,7 +14,7 @@ public class AppUser {
     private String email;
     private List<Birthday> birthdays = new ArrayList<>();
 
-    public AppUser(JSONObject jsonData) throws JSONException {
+    public AppUser(JSONObject jsonData) throws Exception {
         this.id = jsonData.getLong("id");
         this.username = jsonData.getString("username");
         this.email = jsonData.getString("email");
@@ -25,6 +25,10 @@ public class AppUser {
             Birthday birthday = new Birthday((JSONObject) jsonArray.get(i));
             this.birthdays.add(birthday);
         }
+    }
+
+    public Long getId(){
+        return id;
     }
 
     public List<Birthday> getBirthdays() {

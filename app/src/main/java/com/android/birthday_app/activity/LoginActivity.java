@@ -1,4 +1,4 @@
-package com.android.birthday_app;
+package com.android.birthday_app.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,7 +12,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.android.birthday_app.R;
 import com.android.birthday_app.databinding.ActivityLoginBinding;
+import com.android.birthday_app.util.Constants;
 import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONException;
@@ -61,12 +63,12 @@ public class LoginActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
-        RequestBody requestBody = RequestBody.create(jsonObject.toString(), mediaType);
+
+        RequestBody requestBody = RequestBody.create(jsonObject.toString(), Constants.APPLICATION_JSON);
 
         this.httpClient = new OkHttpClient();
         Request request = new Request.Builder()
-                .url("http://192.168.1.16:8080/api/v1/login")
+                .url(Constants.ROOT_API + "/login")
                 .post(requestBody)
                 .build();
 
