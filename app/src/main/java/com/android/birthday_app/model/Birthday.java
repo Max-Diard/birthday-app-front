@@ -5,6 +5,10 @@ import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.Year;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 public class Birthday {
@@ -27,16 +31,23 @@ public class Birthday {
         this.lastname = jsonData.getString("lastname");
     }
 
-    public String getIdenty() {
+    public String getIdentity() {
         return firstname + " " + lastname;
     }
 
-    public int getBirthdayDay() {
-        return date.getDay();
+    public String getBirthdayDay() {
+        return date.getDate() < 10 ? "0" + date.getDate() : String.valueOf(date.getDate());
     }
 
-    public Long getAge() {
-        return new Date().getTime() - date.getTime();
+    public String getAge() {
+        long timeBetween = new Date().getTime() - this.date.getTime();
+        double yearsBetween = timeBetween / 3.15576e+10;
+        int age = (int) Math.floor(yearsBetween);
+        return age + " ans.";
+    }
+
+    public int getBirthdayMonth(){
+        return this.date.getMonth();
     }
 
     @Override

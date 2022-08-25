@@ -49,9 +49,9 @@ public class BirthdayAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             case ListItem.TYPE_BIRTHDAY:
                 Birthday birthday = ((BirthdayItem) mListItem.get(position)).birthday;
                 ViewHolderBirthday viewHolderBirthday = (ViewHolderBirthday) holder;
-                viewHolderBirthday.mTextViewName.setText(birthday.getIdenty());
-                viewHolderBirthday.mTextViewDate.setText(birthday.getBirthdayDay() + "");
-                viewHolderBirthday.mTextViewAge.setText(birthday.getAge() + " ans.");
+                viewHolderBirthday.mTextViewName.setText(birthday.getIdentity());
+                viewHolderBirthday.mTextViewDate.setText(birthday.getBirthdayDay());
+                viewHolderBirthday.mTextViewAge.setText(birthday.getAge());
                 break;
             case ListItem.TYPE_MONTH:
                 MonthItem monthItem = (MonthItem) mListItem.get(position);

@@ -3,8 +3,8 @@ package com.android.birthday_app;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -71,15 +70,36 @@ public class MainActivity extends AppCompatActivity {
         List<Birthday> birthdayList = user.getBirthdays();
         List<String> monthList = Arrays.asList(new DateFormatSymbols(Locale.FRENCH).getMonths());
 
-        for (int i = 0; i < birthdayList.size(); i++) {
-            listItem.add(new BirthdayItem(birthdayList.get(i)));
-        }
-
+        //On itére sur la liste des mois
         for (int i = 0; i < monthList.size(); i++) {
-            listItem.add(new MonthItem(i + 1, monthList.get(i)));
-        }
+            List<Birthday> birthdaysInMonth = new ArrayList<>();
+            String month = monthList.get(i).toUpperCase();
+            // On ajoute le mois à la liste générale
+            listItem.add(new MonthItem(i + 1, month));
 
-        return listItem;
+            // Ont itére sur la liste des anniversaires
+            for (int j = 0; j < birthdayList.size(); j++) {
+                int birthdayMonth = birthdayList.get(j).getBirthdayMonth();
+
+                // Si même mois alors tu add
+                if(birthdayMonth == i){
+                    birthdaysInMonth.add(birthdayList.get(j));
+                }
+            }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                // On trie les anniversaires du mois
+                birthdaysInMonth.sort((a, b) -> {
+                    return Integer.compare(Integer.parseInt(a.getBirthdayDay()), Integer.parseInt(b.getBirthdayDay()));
+                });
+            }
+            // On ajoute les anniversaires un par à un, à la liste générale
+            for (Birthday birthday : birthdaysInMonth) {
+                listItem.add(new BirthdayItem(birthday));
+            }
+
+        }
+       return listItem;
     }
 
     private void logout() {
