@@ -27,6 +27,10 @@ public class AppUser {
         }
     }
 
+    public List<Birthday> getBirthdays() {
+        return birthdays;
+    }
+
     @Override
     public String toString() {
         return "AppUser{" +
