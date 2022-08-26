@@ -24,7 +24,6 @@ import java.io.IOException;
 
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -45,12 +44,22 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(view);
 
         Button loginButton = binding.buttonLogin;
+        Button registerButton = binding.buttonRegister;
 
         loginButton.setOnClickListener(click -> {
             String username = binding.inputUsername.getText().toString();
             String password = binding.inputPassword.getText().toString();
             // Lancer appel API pour authentification
             callApi(username, password);
+        });
+
+        registerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Redirection
+                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                startActivity(intent);
+            }
         });
     }
 
@@ -68,9 +77,9 @@ public class LoginActivity extends AppCompatActivity {
 
         this.httpClient = new OkHttpClient();
         Request request = new Request.Builder()
-                .url(Constants.ROOT_API + "/login")
-                .post(requestBody)
-                .build();
+            .url(Constants.ROOT_API + "/login")
+            .post(requestBody)
+            .build();
 
         this.httpClient.newCall(request).enqueue(new Callback() {
             @Override
@@ -81,26 +90,25 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response){
                 if (response.isSuccessful()) {
-                    Log.d("TAG", "OK COOL");
-                    runOnUiThread(() -> {
-                        try {
-                            String jsonData = response.body().string();
+                    try {
+                        String jsonData = response.body().string();
+                        Log.d("TAG", jsonData);
+                        runOnUiThread(() -> {
+                            // Récupération et envoie des data liées à ce user dans la MainActivity
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             intent.putExtra("user", jsonData);
-
+                            // Mémorisation du status d'authentification et des données utilisateur
                             SharedPreferences preferences = getSharedPreferences("loginFile", Context.MODE_PRIVATE);
                             SharedPreferences.Editor editor = preferences.edit();
                             editor.putBoolean("isLogin", true);
                             editor.putString("userData", jsonData);
                             editor.apply();
-
+                            // Lancement de la nouvelle activité
                             startActivity(intent);
-
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-
-                    });
+                        });
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 } else {
                     runOnUiThread(() -> {
                         String headersError = response.headers().get("errorMessage");

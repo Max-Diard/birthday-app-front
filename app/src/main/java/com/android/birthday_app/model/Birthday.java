@@ -54,7 +54,7 @@ public class Birthday {
 
     @Override
     public String toString() {
-        return "Birthday{" +
+        return "{" +
                 "id=" + id +
                 ", date='" + date + '\'' +
                 ", firstname='" + firstname + '\'' +

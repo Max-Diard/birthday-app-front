@@ -35,13 +35,17 @@ public class AppUser {
         return birthdays;
     }
 
+    public void addBirthday(Birthday birthday) {
+        this.birthdays.add(birthday);
+    }
+
     @Override
     public String toString() {
-        return "AppUser{" +
+        return "{" +
                 "id=" + id +
                 ", username='" + username + '\'' +
                 ", email='" + email + '\'' +
                 ", birthdays=" + birthdays.toString() +
-                '}';
+                "}";
     }
 }

@@ -9,6 +9,8 @@ import com.android.birthday_app.model.Birthday;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class Util {
@@ -67,4 +69,23 @@ public class Util {
         return principalList;
     }
 
+    public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
+            Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+
+    public static boolean validateEmail(String emailStr) {
+        Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(emailStr);
+        return matcher.find();
+    }
+
+    public static boolean checkEmptyString(String stringToCheck) {
+        return stringToCheck.length() > 0;
+    }
+
+    public static boolean checkPasswordAndConfirmation(String password, String confirmation) {
+        return password.length() > 5 && password.equals(confirmation);
+    }
+
+    public static String zeroManager(int n) {
+        return n < 10 ? "0" + n : n + "";
+    }
 }

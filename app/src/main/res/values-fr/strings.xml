@@ -2,7 +2,10 @@
 <resources>
     <string name="labelUsername">Nom d\'utilisateur</string>
     <string name="labelPassword">Mot de passe</string>
+    <string name="labelConfirmation">Confirmation</string>
+    <string name="labelEmail">Email</string>
     <string name="loginButton">Connexion</string>
     <string name="registerButton">S\'inscrire</string>
     <string name="logout_button">Déconnexion</string>
+    <string name="register_title">S\'inscrire</string>
 </resources>

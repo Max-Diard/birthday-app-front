@@ -31,16 +31,13 @@ import com.android.birthday_app.util.Util;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.text.DateFormatSymbols;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -66,11 +63,14 @@ public class MainActivity extends AppCompatActivity {
         View view = binding.getRoot();
         setContentView(view);
 
+        // Récupération des data liées à l'utilisateur connecté
         String userString = getIntent().getStringExtra("user");
-        if(userString == null){
+        // Si c'est null c'est qu'on est pas passé par login activity, donc on récupère les données utilisateur dans le fichier SharedPreference
+        if (userString == null) {
             SharedPreferences preferences = this.getSharedPreferences("loginFile", Context.MODE_PRIVATE);
             userString = preferences.getString("userData", "");
         }
+
         try {
             this.user = new AppUser(new JSONObject(userString));
             mListItem = getListItem(this.user);
@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
         logoutButton.setOnClickListener(click -> logout());
 
         FloatingActionButton addBirthday = binding.addBirthday;
-        addBirthday.setOnClickListener(this::addBirthday);
+        addBirthday.setOnClickListener(this::addBirthdayDialogBuilder);
     }
 
     private List<ListItem> getListItem(AppUser user) {
@@ -130,48 +130,50 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void logout() {
-        SharedPreferences preferences = getSharedPreferences("Islogin", Context.MODE_PRIVATE);
+        SharedPreferences preferences = getSharedPreferences("loginFile", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putBoolean("Islogin", false).apply();
+        editor.putBoolean("isLogin", false);
+        editor.putString("userData", "");
+        editor.apply();
 
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
         startActivity(intent);
     }
 
-    private void addBirthday(View view){
+    private void addBirthdayDialogBuilder(View view) {
+        // Création de la fenêtre modale
         AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
-        builder.setTitle("Add Birthday");
-
+        builder.setTitle("Add new Birthday");
         View viewDialog = LayoutInflater.from(view.getContext()).inflate(R.layout.dialog_add_birthday, null);
         final EditText inputFirstname = viewDialog.findViewById(R.id.input_firstname);
         final EditText inputLastname = viewDialog.findViewById(R.id.input_lastname);
         final DatePicker inputDatePicker = viewDialog.findViewById(R.id.input_date);
         builder.setView(viewDialog);
 
+        // Action sur le bouton de soumission
         builder.setPositiveButton("OK", (dialog, which) -> {
-            Date dateBirthday = null;
+            // Nouvel objet JSON qui transitera dans le body de la requête POST
             JSONObject jsonObject = new JSONObject();
             String firstname = inputFirstname.getText().toString();
             String lastname = inputLastname.getText().toString();
-
-            try{
-                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-                String month = (inputDatePicker.getMonth() + 1) < 10 ? "0" + (inputDatePicker.getMonth() + 1) : ""+(inputDatePicker.getMonth() + 1);
-                String day = inputDatePicker.getDayOfMonth() < 10 ? "0" + inputDatePicker.getDayOfMonth() : ""+inputDatePicker.getDayOfMonth();
+            if (Util.checkEmptyString(firstname) && (Util.checkEmptyString(lastname))) {
+                // Construction de la date d'anniversaire au bon format
+                String month = Util.zeroManager(inputDatePicker.getMonth() + 1);
+                String day = Util.zeroManager(inputDatePicker.getDayOfMonth());
                 String dateString = inputDatePicker.getYear() + "-" + month + "-" + day;
-                dateBirthday = format.parse(dateString);
 
-//                jsonObject.put("id", null);
-                jsonObject.put("firstname", firstname);
-                jsonObject.put("lastname", lastname);
-                jsonObject.put("date", dateString);
-//                Birthday birthday = new Birthday(jsonObject);
-                callApiToAddBirthday(jsonObject);
-
-            } catch (Exception e ){
-                e.getMessage();
+                try {
+                    jsonObject.put("firstname", firstname);
+                    jsonObject.put("lastname", lastname);
+                    jsonObject.put("date", dateString);
+                    // Appel API pour ajouter le nouvel anniversaire
+                    callApiToAddBirthday(jsonObject);
+                } catch (Exception e ){
+                    e.getMessage();
+                }
+            } else {
+                Snackbar.make(binding.getRoot(), "Firstname and lastname must be at least 1 character.", Snackbar.LENGTH_LONG).show();
             }
-
         });
         builder.setNegativeButton("Annuler", null);
         builder.create().show();
@@ -204,16 +206,52 @@ public class MainActivity extends AppCompatActivity {
                             mListItem.add(birthdayItem);
                             mListItem = Util.changeListItem(mListItem);
                             birthdayAdapter.setListItems(mListItem);
+                            refreshUserData();
                         });
 
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                }else {
+                } else {
                     Snackbar.make(binding.getRoot(), response.headers().get("errorMessage"), Snackbar.LENGTH_LONG).show();
                 }
             }
         });
 
+    }
+
+    public void refreshUserData() {
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(Constants.ROOT_API + "/users/" + user.getId())
+                .build();
+
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Log.d("TAG", "Marche pas");
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    try {
+                        String jsonData = response.body().string();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Log.d("TAG", jsonData);
+                                SharedPreferences preferences = getSharedPreferences("loginFile", Context.MODE_PRIVATE);
+                                SharedPreferences.Editor editor = preferences.edit();
+                                editor.putString("userData", jsonData);
+                                editor.apply();
+                            }
+                        });
+                    } catch (Exception e) {
+                        e.getMessage();
+                    }
+                }
+            }
+        });
     }
 }
