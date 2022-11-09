@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -47,6 +48,8 @@ public class LoginActivity extends AppCompatActivity {
         Button registerButton = binding.buttonRegister;
 
         loginButton.setOnClickListener(click -> {
+            binding.inputPassword.onEditorAction(EditorInfo.IME_ACTION_DONE);
+
             String username = binding.inputUsername.getText().toString();
             String password = binding.inputPassword.getText().toString();
             // Lancer appel API pour authentification
@@ -77,18 +80,20 @@ public class LoginActivity extends AppCompatActivity {
 
         this.httpClient = new OkHttpClient();
         Request request = new Request.Builder()
-            .url(Constants.ROOT_API + "/login")
-            .post(requestBody)
-            .build();
+                .url(Constants.ROOT_API + "/login")
+                .post(requestBody)
+                .build();
 
         this.httpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                Toast.makeText(LoginActivity.this, "Invalid Credentials : " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                runOnUiThread(() -> {
+                    Toast.makeText(LoginActivity.this, "Impossible de se connecter, erreur serveur.", Toast.LENGTH_SHORT).show();
+                });
             }
 
             @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response){
+            public void onResponse(@NonNull Call call, @NonNull Response response) {
                 if (response.isSuccessful()) {
                     try {
                         String jsonData = response.body().string();

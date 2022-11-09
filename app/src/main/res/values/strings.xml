@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">birthday-app</string>
+    <string name="app_name">birthday-app</string>
     <string name="labelUsername">Username</string>
     <string name="labelPassword">Password</string>
     <string name="labelConfirmation">Confirmation</string>

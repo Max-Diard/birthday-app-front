@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">AnnivApp</string>
     <string name="labelUsername">Nom d\'utilisateur</string>
     <string name="labelPassword">Mot de passe</string>
     <string name="labelConfirmation">Confirmation</string>
