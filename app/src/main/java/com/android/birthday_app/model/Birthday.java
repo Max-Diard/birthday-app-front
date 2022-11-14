@@ -17,6 +17,7 @@ public class Birthday {
     private Date date;
     private String firstname;
     private String lastname;
+    private String noBirthday;
 
     public Birthday(JSONObject jsonData) throws Exception {
         this.id = jsonData.getLong("id");
@@ -33,6 +34,10 @@ public class Birthday {
         this.date = date;
     }
 
+    public Birthday(String noBirthday){
+        this.noBirthday = noBirthday;
+    }
+
     public String getIdentity() {
         return firstname + " " + lastname;
     }
@@ -45,7 +50,11 @@ public class Birthday {
         long timeBetween = new Date().getTime() - this.date.getTime();
         double yearsBetween = timeBetween / 3.15576e+10;
         int age = (int) Math.floor(yearsBetween);
-        return age + " ans.";
+        return age + " ans";
+    }
+
+    public String getNoBirthday(){
+        return this.noBirthday;
     }
 
     public int getBirthdayMonth(){

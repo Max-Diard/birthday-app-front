@@ -5,6 +5,22 @@
     android:layout_height="match_parent"
     tools:context=".activity.LoginActivity">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:background="#AFACAC"
+        android:visibility="invisible">
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true" />
+
+    </RelativeLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -19,14 +35,14 @@
 
             <EditText
                 android:id="@+id/input_username"
-                android:layout_width="200dp"
+                android:layout_width="@dimen/size_input"
                 android:layout_height="wrap_content"
                 android:hint="@string/labelUsername"
                 android:text="" />
 
             <EditText
                 android:id="@+id/input_password"
-                android:layout_width="200dp"
+                android:layout_width="@dimen/size_input"
                 android:layout_height="wrap_content"
                 android:hint="@string/labelPassword"
                 android:inputType="textPassword"
@@ -45,14 +61,14 @@
                 android:id="@+id/button_register"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="5dp"
+                android:layout_marginEnd="10dp"
                 android:text="@string/registerButton" />
 
             <Button
                 android:id="@+id/button_login"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
+                android:layout_marginLeft="10dp"
                 android:text="@string/loginButton" />
 
         </LinearLayout>

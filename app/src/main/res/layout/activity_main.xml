@@ -13,17 +13,6 @@
 
         <include layout="@layout/content_scrolling" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="right">
-            <Button
-                android:id="@+id/logout_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/logout_button" />
-        </LinearLayout>
-
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/add_birthday"
             android:layout_width="wrap_content"
@@ -34,6 +23,7 @@
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="10dp"
             app:srcCompat="@android:drawable/ic_input_add"
+            app:tint="@color/white"
             android:backgroundTint="@color/colorPrimaryBackground"/>
     </RelativeLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

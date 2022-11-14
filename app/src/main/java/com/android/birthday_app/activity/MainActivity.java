@@ -7,6 +7,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -38,6 +40,7 @@ import java.io.IOException;
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -84,12 +87,10 @@ public class MainActivity extends AppCompatActivity {
         birthdayAdapter = new BirthdayAdapter(this, mListItem);
         recyclerView.setAdapter(birthdayAdapter);
 
-        Button logoutButton = binding.logoutButton;
-        logoutButton.setOnClickListener(click -> logout());
-
         FloatingActionButton addBirthday = binding.addBirthday;
         addBirthday.setOnClickListener(this::addBirthdayDialogBuilder);
     }
+
 
     private List<ListItem> getListItem(AppUser user) {
         List<ListItem> listItem = new ArrayList<>();
@@ -121,9 +122,15 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
             // On ajoute les anniversaires un par à un, à la liste générale
-            for (Birthday birthday : birthdaysInMonth) {
+            if (birthdaysInMonth.size() > 0){
+                for (Birthday birthday : birthdaysInMonth) {
+                    listItem.add(new BirthdayItem(birthday));
+                }
+            } else {
+                Birthday birthday = new Birthday("Pas d'anniversaire");
                 listItem.add(new BirthdayItem(birthday));
             }
+
         }
 
        return listItem;
@@ -237,15 +244,12 @@ public class MainActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     try {
                         String jsonData = response.body().string();
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Log.d("TAG", jsonData);
-                                SharedPreferences preferences = getSharedPreferences("loginFile", Context.MODE_PRIVATE);
-                                SharedPreferences.Editor editor = preferences.edit();
-                                editor.putString("userData", jsonData);
-                                editor.apply();
-                            }
+                        runOnUiThread(() -> {
+                            Log.d("TAG", jsonData);
+                            SharedPreferences preferences = getSharedPreferences("loginFile", Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = preferences.edit();
+                            editor.putString("userData", jsonData);
+                            editor.apply();
                         });
                     } catch (Exception e) {
                         e.getMessage();
@@ -254,4 +258,21 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.action_bar_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.logout_button) {
+            logout();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }

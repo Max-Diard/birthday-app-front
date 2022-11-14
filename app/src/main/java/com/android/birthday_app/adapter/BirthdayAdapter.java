@@ -1,6 +1,7 @@
 package com.android.birthday_app.adapter;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,9 +56,18 @@ public class BirthdayAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             case ListItem.TYPE_BIRTHDAY:
                 Birthday birthday = ((BirthdayItem) mListItem.get(position)).birthday;
                 ViewHolderBirthday viewHolderBirthday = (ViewHolderBirthday) holder;
-                viewHolderBirthday.mTextViewName.setText(birthday.getIdentity());
-                viewHolderBirthday.mTextViewDate.setText(birthday.getBirthdayDay());
-                viewHolderBirthday.mTextViewAge.setText(birthday.getAge());
+                if (birthday.getNoBirthday() != null){
+                    viewHolderBirthday.mTextViewName.setText(birthday.getNoBirthday());
+                    viewHolderBirthday.mTextViewName.setTypeface(null, Typeface.BOLD);
+                    viewHolderBirthday.mTextViewDate.setText("");
+                    viewHolderBirthday.mTextViewAge.setText("");
+                } else {
+                    viewHolderBirthday.mTextViewName.setTypeface(null, Typeface.NORMAL);
+                    viewHolderBirthday.mTextViewName.setText(birthday.getIdentity());
+                    viewHolderBirthday.mTextViewDate.setText(birthday.getBirthdayDay());
+                    viewHolderBirthday.mTextViewAge.setText(birthday.getAge());
+                }
+
                 break;
             case ListItem.TYPE_MONTH:
                 MonthItem monthItem = (MonthItem) mListItem.get(position);

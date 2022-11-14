@@ -49,6 +49,7 @@ public class LoginActivity extends AppCompatActivity {
 
         loginButton.setOnClickListener(click -> {
             binding.inputPassword.onEditorAction(EditorInfo.IME_ACTION_DONE);
+            binding.progressBar.setVisibility(View.VISIBLE);
 
             String username = binding.inputUsername.getText().toString();
             String password = binding.inputPassword.getText().toString();
@@ -87,6 +88,8 @@ public class LoginActivity extends AppCompatActivity {
         this.httpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                binding.progressBar.setVisibility(View.INVISIBLE);
+
                 runOnUiThread(() -> {
                     Toast.makeText(LoginActivity.this, "Impossible de se connecter, erreur serveur.", Toast.LENGTH_SHORT).show();
                 });
@@ -94,6 +97,8 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) {
+                binding.progressBar.setVisibility(View.INVISIBLE);
+
                 if (response.isSuccessful()) {
                     try {
                         String jsonData = response.body().string();
